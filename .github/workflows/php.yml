@@ -3,18 +3,18 @@ name: PHP Composer
 on:
   push:
     branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+
 
 permissions:
   contents: read
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
+    name: Validate & Install Composer Dependencies
+    runs-on: self-hosted
 
     steps:
+    - name: Checkout repository
     - uses: actions/checkout@v4
 
     - name: Validate composer.json and composer.lock
@@ -30,10 +30,8 @@ jobs:
           ${{ runner.os }}-php-
 
     - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
+      run: touch .env
+      run: echo "secret=${{secrets.PHP_ENV_FILE}}" >> .env
+      run: composer install --prefer-dist --no-progress --no-interaction --no-suggest
 
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
 
-    # - name: Run test suite
-    #   run: composer run-script test
