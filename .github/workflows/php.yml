@@ -4,7 +4,6 @@ on:
   push:
     branches: [ "master" ]
 
-
 permissions:
   contents: read
 
@@ -14,24 +13,23 @@ jobs:
     runs-on: self-hosted
 
     steps:
-    - name: Checkout repository
-    - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Validate composer.json and composer.lock
-      run: composer validate --strict
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
 
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v3
-      with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
 
-    - name: Install dependencies
-      run: touch .env
-      run: echo "secret=${{secrets.PHP_ENV_FILE}}" >> .env
-      run: composer install --prefer-dist --no-progress --no-interaction --no-suggest
-
-
+      - name: Install dependencies
+        run: |
+          touch .env
+          echo "secret=${{ secrets.PHP_ENV_FILE }}" >> .env
+          composer install --prefer-dist --no-progress --no-interaction --no-suggest
